@@ -97,7 +97,7 @@
                 </div>
             </div>
 
-            <div data-location="both" class="product-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-between hover:border-purple-500/40 transition duration-300 neon-border">
+            <div data-location="cbd" class="product-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-between hover:border-purple-500/40 transition duration-300 neon-border">
                 <div class="p-4 bg-gray-950 flex justify-center items-center h-48 relative border-b border-gray-900">
                     <div class="absolute top-2 right-2 bg-cyan-900 text-cyan-200 text-xs font-bold px-2 py-0.5 rounded">Hardware Kit</div>
                     <img src="VDS-Store/932913.jpg" alt="Vaporesso Vibe" class="h-full w-auto object-contain max-h-40" onerror="this.src='VDS-Store/932913.png'">
@@ -128,9 +128,9 @@
                 </div>
             </div>
 
-            <div data-location="cbd" class="product-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-between hover:border-purple-500/40 transition duration-300 neon-border">
+            <div data-location="both" class="product-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-between hover:border-purple-500/40 transition duration-300 neon-border">
                 <div class="p-4 bg-gray-950 flex justify-center items-center h-48 relative border-b border-gray-900">
-                    <div class="absolute top-2 right-2 bg-purple-900 text-purple-200 text-xs font-bold px-2 py-0.5 rounded">1000 Puffs (CBD Only)</div>
+                    <div class="absolute top-2 right-2 bg-purple-900 text-purple-200 text-xs font-bold px-2 py-0.5 rounded">1000 Puffs</div>
                     <img src="VDS-Store/930097.jpg" alt="So Soul Mini Pod" class="h-full w-auto object-contain max-h-40" onerror="this.src='VDS-Store/930097.jpg'">
                 </div>
                 <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
@@ -159,9 +159,9 @@
                 </div>
             </div>
 
-            <div data-location="pioneer" class="product-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-between hover:border-purple-500/40 transition duration-300 neon-border">
+            <div data-location="cbd" class="product-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-between hover:border-purple-500/40 transition duration-300 neon-border">
                 <div class="p-4 bg-gray-950 flex justify-center items-center h-48 relative border-b border-gray-900">
-                    <div class="absolute top-2 right-2 bg-blue-900 text-blue-200 text-xs font-bold px-2 py-0.5 rounded">60ml (Pioneer Only)</div>
+                    <div class="absolute top-2 right-2 bg-blue-900 text-blue-200 text-xs font-bold px-2 py-0.5 rounded">60ml E-Liquid</div>
                     <img src="VDS-Store/933236.jpg" alt="Trippi Flavour Shot" class="h-full w-auto object-contain max-h-40" onerror="this.src='VDS-Store/933236.png'">
                 </div>
                 <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
@@ -382,7 +382,7 @@
 
         function submitOrderToWhatsApp() {
             if (cart.length === 0) {
-                alert("Your shopping cart is completely empty! Add some legend items first.");
+                alert("Your shopping cart is completely empty! Add some items first.");
                 return;
             }
             
@@ -405,7 +405,7 @@
                             `💰 Estimated Basket Total: R ${totalAmount.toFixed(2)}\n\n` +
                             `⚠️ Note: Requests are strictly subject to stock availability in store. Please confirm reservations and digital payment instructions!`;
             
-            window.open Levant(`https://wa.me/${contactNumber}?text=${encodeURIComponent(message)}`, '_blank');
+            window.open(`https://wa.me/${contactNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
     </script>
 </body>
