@@ -206,44 +206,13 @@
             <button onclick="toggleCart()" class="text-gray-400 hover:text-red-400 text-xl cursor-pointer p-1"><i class="fas fa-times"></i></button>
         </div>
 
-        <div class="flex-grow overflow-y-auto p-4 space-y-4">
-            <div id="cart-items-list" class="space-y-4 text-sm">
-                <p class="text-gray-500 text-center py-12 italic">Your shopping basket is completely empty.</p>
-            </div>
-
-            <div id="shipping-configurator" class="bg-gray-950 p-3 rounded-lg border border-purple-900/40 space-y-3 hidden">
-                <h5 class="text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1">
-                    <i class="fas fa-shipping-fast text-[11px]"></i> Delivery Logistics
-                </h5>
-                <label class="block">
-                    <span class="text-[10px] text-gray-400 font-medium block mb-1 uppercase">Choose Collection/Delivery Method:</span>
-                    <select id="shipping-method" onchange="calculateFinalTotal()" class="w-full bg-gray-900 border border-gray-800 text-xs rounded p-2 focus:outline-none focus:border-cyan-400 text-gray-200 font-medium">
-                        <option value="0">In-Store Collection (Newcastle Branch) - R 0.00</option>
-                        <option value="60">PAXI Click & Collect (PEP-to-PEP Drop) - R 60.00</option>
-                        <option value="100">The Courier Guy (Direct Door Delivery) - R 100.00</option>
-                    </select>
-                </label>
-                
-                <div id="shipping-address-box" class="space-y-2 hidden">
-                    <input type="text" id="shipping-address" placeholder="Enter full delivery street address..." class="w-full bg-gray-900 border border-gray-800 text-xs rounded p-2 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400">
-                </div>
-                <div id="shipping-paxi-box" class="space-y-2 hidden">
-                    <input type="text" id="paxi-code" placeholder="Enter nearest PEP Store name or PAXI code..." class="w-full bg-gray-900 border border-gray-800 text-xs rounded p-2 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400">
-                </div>
-            </div>
+        <div id="cart-items-list" class="p-4 flex-grow overflow-y-auto space-y-4 text-sm">
+            <p class="text-gray-500 text-center py-12 italic">Your shopping basket is completely empty.</p>
         </div>
 
-        <div class="p-4 bg-gray-950 border-t border-gray-800 space-y-3">
+        <div class="p-4 bg-gray-950 border-t border-gray-800 space-y-4">
             <div class="flex justify-between items-baseline">
-                <span class="text-xs text-gray-400 uppercase tracking-wider font-bold">Subtotal Amount:</span>
-                <span id="cart-subtotal" class="text-sm font-bold text-gray-300">R 0.00</span>
-            </div>
-            <div class="flex justify-between items-baseline border-b border-gray-800 pb-2">
-                <span class="text-xs text-gray-400 uppercase tracking-wider font-bold">Delivery Fee:</span>
-                <span id="cart-shipping-cost" class="text-sm font-bold text-gray-300">R 0.00</span>
-            </div>
-            <div class="flex justify-between items-baseline pt-1">
-                <span class="text-xs text-purple-400 uppercase tracking-wider font-extrabold">Estimated Basket Total:</span>
+                <span class="text-xs text-gray-400 uppercase tracking-wider font-bold">Estimated Total Amount:</span>
                 <span id="cart-total" class="text-2xl font-black text-cyan-400">R 0.00</span>
             </div>
             <p class="text-[10px] text-amber-400 italic bg-amber-950/20 p-2 rounded border border-amber-900/30">
@@ -385,25 +354,23 @@
 
         function updateCartUI() {
             const itemsContainer = document.getElementById('cart-items-list');
-            const configPanel = document.getElementById('shipping-configurator');
+            const totalElement = document.getElementById('cart-total');
             const countElement = document.getElementById('cart-count');
             
             if (cart.length === 0) {
                 itemsContainer.innerHTML = `<p class="text-gray-500 text-center py-12 italic">Your shopping basket is completely empty.</p>`;
+                totalElement.innerText = "R 0.00";
                 countElement.innerText = "0";
-                configPanel.classList.add('hidden');
-                document.getElementById('cart-subtotal').innerText = "R 0.00";
-                document.getElementById('cart-shipping-cost').innerText = "R 0.00";
-                document.getElementById('cart-total').innerText = "R 0.00";
                 return;
             }
             
-            configPanel.classList.remove('hidden');
             let htmlOutput = "";
+            let totalAmount = 0;
             let totalItemsCount = 0;
             
             cart.forEach((item, index) => {
                 const subtotal = item.price * item.quantity;
+                totalAmount += subtotal;
                 totalItemsCount += item.quantity;
                 
                 htmlOutput += `
@@ -423,75 +390,34 @@
             });
             
             itemsContainer.innerHTML = htmlOutput;
+            totalElement.innerText = `R ${totalAmount.toFixed(2)}`;
             countElement.innerText = totalItemsCount;
-            calculateFinalTotal();
-        }
-
-        function calculateFinalTotal() {
-            if (cart.length === 0) return;
-            
-            let subtotal = 0;
-            cart.forEach(item => {
-                subtotal += item.price * item.quantity;
-            });
-            
-            const shippingSelector = document.getElementById('shipping-method');
-            const shippingCost = parseFloat(shippingSelector.value);
-            const grandTotal = subtotal + shippingCost;
-            
-            document.getElementById('cart-subtotal').innerText = `R ${subtotal.toFixed(2)}`;
-            document.getElementById('cart-shipping-cost').innerText = `R ${shippingCost.toFixed(2)}`;
-            document.getElementById('cart-total').innerText = `R ${grandTotal.toFixed(2)}`;
-            
-            const addressBox = document.getElementById('shipping-address-box');
-            const paxiBox = document.getElementById('shipping-paxi-box');
-            
-            if (shippingCost === 100) {
-                addressBox.classList.remove('hidden');
-                paxiBox.classList.add('hidden');
-            } else if (shippingCost === 60) {
-                paxiBox.classList.remove('hidden');
-                addressBox.classList.add('hidden');
-            } else {
-                addressBox.classList.add('hidden');
-                paxiBox.classList.add('hidden');
-            }
         }
 
         function submitOrderToWhatsApp() {
-            if (cart.length === 0) return;
-            
-            const selectElement = document.getElementById("global-location-select");
-            const selectedLocation = selectElement.options[selectElement.selectedIndex].text;
-            const shippingSelector = document.getElementById('shipping-method');
-            const shippingCost = parseFloat(shippingSelector.value);
-            
-            let deliveryMetaText = "🏬 In-Store Collection";
-            if (shippingCost === 100) {
-                const addr = document.getElementById('shipping-address').value;
-                if (!addr) { alert("⚠️ Please enter your street address for courier delivery!"); return; }
-                deliveryMetaText = `🚚 Courier Delivery to: ${addr}`;
-            } else if (shippingCost === 60) {
-                const paxi = document.getElementById('paxi-code').value;
-                if (!paxi) { alert("⚠️ Please enter your nearest PEP Store or PAXI code!"); return; }
-                deliveryMetaText = `📦 PAXI Collect at: ${paxi}`;
+            if (cart.length === 0) {
+                alert("Your shopping cart is completely empty! Add some items first.");
+                return;
             }
             
+            const contactNumber = "27678049999"; 
+            const selectElement = document.getElementById("global-location-select");
+            const selectedLocation = selectElement.options[selectElement.selectedIndex].text;
+            
+            let totalAmount = 0;
             let itemsTextTemplate = "";
+            
             cart.forEach((item, index) => {
                 const subtotal = item.price * item.quantity;
+                totalAmount += subtotal;
                 itemsTextTemplate += `${index + 1}. 📦 ${item.name} (x${item.quantity}) -> R ${subtotal.toFixed(2)}\n`;
             });
             
-            const grandTotalText = document.getElementById('cart-total').innerText;
-            const contactNumber = "27678049999"; 
-            
-            const message = `🔥 NEW ORDER REQ - VAPE DRAGON SQUAD 🔥\n\n` +
-                            `📍 Selected Branch: ${selectedLocation}\n` +
-                            `📦 Delivery Method: ${deliveryMetaText}\n\n` +
-                            `📋 Requested Stock Items:\n${itemsTextTemplate}\n` +
-                            `💰 Calculated Order Total: ${grandTotalText}\n\n` +
-                            `⚠️ Note: Orders are subject to store inventory. Please confirm reservations and banking info layout for drop-offs!`;
+            const message = `🔥 NEW BULK REQUEST - VAPE DRAGON SQUAD 🔥\n\n` +
+                            `📍 Preferred Collection Point:\n👉 ${selectedLocation}\n\n` +
+                            `📋 Stock Request List:\n${itemsTextTemplate}\n` +
+                            `💰 Estimated Basket Total: R ${totalAmount.toFixed(2)}\n\n` +
+                            `⚠️ Note: Requests are strictly subject to stock availability in store. Please confirm reservations and digital payment instructions!`;
             
             window.open(`https://wa.me/${contactNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
