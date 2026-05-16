@@ -173,7 +173,6 @@
                             <span class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider block mb-1">Select Full Setup Option:</span>
                             <select id="trippi-nic" onchange="updateTrippiCardPrice()" class="w-full bg-gray-950 border border-gray-800 text-xs rounded p-1.5 focus:outline-none focus:border-cyan-400 text-gray-300">
                                 <option value="CHOOSE" data-label="">--- Choose Your Unit Setup ---</option>
-                                <option value="200" data-label=" (Flavour + 0mg VG Setup)">0mg Full Setup: Flavour + Vegetable Glycerine VG Shot - R 200.00</option>
                                 <option value="240" data-label=" (Flavour + 2mg Nic & VG Setup)">2mg Full Setup: Flavour + 2mg Nic Shot + VG Shot - R 240.00</option>
                                 <option value="240" data-label=" (Flavour + 3mg Nic & VG Setup)">3mg Full Setup: Flavour + 3mg Nic Shot + VG Shot - R 240.00</option>
                                 <option value="240" data-label=" (Flavour + 6mg Nic & VG Setup)">6mg Full Setup: Flavour + 6mg Nic Shot + VG Shot - R 240.00</option>
@@ -274,7 +273,6 @@
             sidebar.classList.toggle('translate-x-full');
         }
 
-        // Updated configurator price display logic
         function updateTrippiCardPrice() {
             const selector = document.getElementById('trippi-nic');
             const chosenVal = selector.value;
@@ -289,9 +287,7 @@
             document.getElementById('trippi-display-price').innerText = `R ${totalCardPrice.toFixed(2)}`;
             
             const baseText = document.getElementById('trippi-base-text');
-            if (totalCardPrice === 200) {
-                baseText.innerText = "0mg Setup Active";
-            } else if (totalCardPrice === 240) {
+            if (totalCardPrice === 240) {
                 baseText.innerText = "Nicotine + VG Setup Active";
             } else {
                 baseText.innerText = "Higher Nicotine Setup Active";
