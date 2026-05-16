@@ -88,7 +88,7 @@
                     <div>
                         <div class="flex justify-between items-baseline mb-3">
                             <span class="text-xs text-gray-500 uppercase tracking-wider">Price</span>
-                            <span class="text-xl font-black text-cyan-400">R 250.00</span>
+                            <span class="text-xl font-black text-cyan-400">R 280.00</span>
                         </div>
                         <button onclick="addNastyToCart()" class="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-bold text-sm py-2.5 rounded-lg transition uppercase tracking-wider shadow-lg cursor-pointer">
                             Add to Cart
@@ -150,7 +150,7 @@
                     <div>
                         <div class="flex justify-between items-baseline mb-3">
                             <span class="text-xs text-gray-500 uppercase tracking-wider">Price</span>
-                            <span class="text-xl font-black text-cyan-400">R 100.00</span>
+                            <span class="text-xl font-black text-cyan-400">R 90.00</span>
                         </div>
                         <button onclick="addSoSoulToCart()" class="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-bold text-sm py-2.5 rounded-lg transition uppercase tracking-wider shadow-lg cursor-pointer">
                             Add to Cart
@@ -170,12 +170,16 @@
                         <p id="trippi-base-text" class="text-xs text-cyan-400 font-medium tracking-wide">Flavour Only</p>
                         
                         <label class="block mt-3">
-                            <span class="text-[10px] text-purple-400 font-bold uppercase tracking-wider block mb-1">Select Nicotine Strength:</span>
+                            <span class="text-[10px] text-purple-400 font-bold uppercase tracking-wider block mb-1">Add Mix Ins / Strengths:</span>
                             <select id="trippi-nic" onchange="updateTrippiCardPrice()" class="w-full bg-gray-950 border border-gray-800 text-xs rounded p-1.5 focus:outline-none focus:border-cyan-400 text-gray-300">
                                 <option value="0" data-label=" (Flavour Only - 0mg)">0mg Nicotine (Flavour Only) - R 170.00</option>
-                                <option value="110" data-label=" (+ 20mg Nic Shot)">20mg Nicotine Shot - R 280.00</option>
-                                <option value="120" data-label=" (+ 35mg Nic Shot)">35mg Nicotine Shot - R 290.00</option>
-                                <option value="130" data-label=" (+ 50mg Nic Shot)">50mg Nicotine Shot - R 300.00</option>
+                                <option value="30" data-label=" (+ 0mg VG Shot)">0mg Nicotine + Vegetable Glycerine VG Shot Only (R170 + R30) - R 200.00</option>
+                                <option value="70" data-label=" (+ 2mg Nic & VG Shot)">2mg Nicotine Shot + Vegetable Glycerine VG Shot (R170 + R40 + R30) - R 240.00</option>
+                                <option value="70" data-label=" (+ 3mg Nic & VG Shot)">3mg Nicotine Shot + Vegetable Glycerine VG Shot (R170 + R40 + R30) - R 240.00</option>
+                                <option value="70" data-label=" (+ 6mg Nic & VG Shot)">6mg Nicotine Shot + Vegetable Glycerine VG Shot (R170 + R40 + R30) - R 240.00</option>
+                                <option value="110" data-label=" (Full Kit - 20mg)">20mg Nicotine Shot Setup - R 280.00</option>
+                                <option value="120" data-label=" (Full Kit - 35mg)">35mg Nicotine Shot Setup - R 290.00</option>
+                                <option value="130" data-label=" (Full Kit - 50mg)">50mg Nicotine Shot Setup - R 300.00</option>
                             </select>
                         </label>
                     </div>
@@ -248,6 +252,7 @@
     <script>
         let cart = [];
 
+        // Dynamic Filtering
         function filterProductsByBranch() {
             const selector = document.getElementById("global-location-select");
             const chosenBranch = selector.value;
@@ -270,6 +275,7 @@
             sidebar.classList.toggle('translate-x-full');
         }
 
+        // Updated Math Processing Function
         function updateTrippiCardPrice() {
             const selector = document.getElementById('trippi-nic');
             const extraPrice = parseFloat(selector.value);
@@ -279,8 +285,12 @@
             const baseText = document.getElementById('trippi-base-text');
             if (extraPrice === 0) {
                 baseText.innerText = "Flavour Only";
+            } else if (extraPrice === 30) {
+                baseText.innerText = "Flavour + VG Vegetable Glycerine Only";
+            } else if (extraPrice === 70) {
+                baseText.innerText = "Flavour + Nicotine Shot & VG Combo";
             } else {
-                baseText.innerText = "Flavour + Nicotine Shot Included";
+                baseText.innerText = "Flavour + Higher Nicotine Setup Included";
             }
         }
 
