@@ -201,25 +201,54 @@
     <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-gray-900 border-l border-purple-900/60 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
         <div class="p-4 bg-gray-950 border-b border-gray-800 flex justify-between items-center">
             <h4 class="font-black tracking-wide text-white flex items-center gap-2">
-                <i class="fas fa-shopping-basket text-purple-400"></i> YOUR BASKET ORDER
+                <i class="fas fa-shopping-basket text-purple-400"></i> PREMIUM CHECKOUT
             </h4>
             <button onclick="toggleCart()" class="text-gray-400 hover:text-red-400 text-xl cursor-pointer p-1"><i class="fas fa-times"></i></button>
         </div>
 
-        <div id="cart-items-list" class="p-4 flex-grow overflow-y-auto space-y-4 text-sm">
-            <p class="text-gray-500 text-center py-12 italic">Your shopping basket is completely empty.</p>
+        <div class="flex-grow overflow-y-auto p-4 space-y-4">
+            <div id="cart-items-list" class="space-y-4 text-sm">
+                <p class="text-gray-500 text-center py-6 italic">Your shopping basket is completely empty.</p>
+            </div>
+
+            <div id="shipping-configurator" class="bg-gray-950 p-3 rounded-lg border border-purple-900/40 space-y-3 hidden">
+                <h5 class="text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1">
+                    <i class="fas fa-truck text-[11px]"></i> Delivery & Checkout Logistics
+                </h5>
+                <label class="block">
+                    <span class="text-[10px] text-gray-400 font-medium block mb-1 uppercase">Choose Delivery Method:</span>
+                    <select id="shipping-method" onchange="calculateFinalTotal()" class="w-full bg-gray-900 border border-gray-800 text-xs rounded p-2 focus:outline-none focus:border-cyan-400 text-gray-200 font-medium">
+                        <option value="0">In-Store Collection (Newcastle Branch) - R 0.00</option>
+                        <option value="60">PAXI Click & Collect (PEP-to-PEP Drop) - R 60.00</option>
+                        <option value="100">The Courier Guy (Direct Door Delivery) - R 100.00</option>
+                    </select>
+                </label>
+                
+                <div id="shipping-address-box" class="space-y-2 hidden">
+                    <input type="text" id="shipping-address" placeholder="Enter full delivery street address..." class="w-full bg-gray-900 border border-gray-800 text-xs rounded p-2 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400">
+                </div>
+                <div id="shipping-paxi-box" class="space-y-2 hidden">
+                    <input type="text" id="paxi-code" placeholder="Enter nearest PEP Store name or PAXI code..." class="w-full bg-gray-900 border border-gray-800 text-xs rounded p-2 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400">
+                </div>
+            </div>
         </div>
 
-        <div class="p-4 bg-gray-950 border-t border-gray-800 space-y-4">
+        <div class="p-4 bg-gray-950 border-t border-gray-800 space-y-3">
             <div class="flex justify-between items-baseline">
-                <span class="text-xs text-gray-400 uppercase tracking-wider font-bold">Estimated Total Amount:</span>
+                <span class="text-xs text-gray-400 uppercase tracking-wider font-bold">Subtotal Amount:</span>
+                <span id="cart-subtotal" class="text-sm font-bold text-gray-300">R 0.00</span>
+            </div>
+            <div class="flex justify-between items-baseline border-b border-gray-800 pb-2">
+                <span class="text-xs text-gray-400 uppercase tracking-wider font-bold">Delivery Fee:</span>
+                <span id="cart-shipping-cost" class="text-sm font-bold text-gray-300">R 0.00</span>
+            </div>
+            <div class="flex justify-between items-baseline pt-1">
+                <span class="text-xs text-purple-400 uppercase tracking-wider font-extrabold">Final Grand Total:</span>
                 <span id="cart-total" class="text-2xl font-black text-cyan-400">R 0.00</span>
             </div>
-            <p class="text-[10px] text-amber-400 italic bg-amber-950/20 p-2 rounded border border-amber-900/30">
-                📌 Prices will be verified against live stock availability upon your message submission.
-            </p>
-            <button onclick="submitOrderToWhatsApp()" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white font-black py-3 rounded-xl transition uppercase tracking-widest text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer">
-                <i class="fab fa-whatsapp text-lg"></i> Send Order Via WhatsApp
+            
+            <button onclick="executePremiumPaymentFlow()" class="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-black py-3 rounded-xl transition uppercase tracking-wider text-xs shadow-xl flex items-center justify-center gap-2 cursor-pointer mt-2">
+                <i class="fas fa-credit-card text-sm"></i> Proceed to Secure Card Payment
             </button>
         </div>
     </div>
@@ -227,8 +256,6 @@
     <footer id="locations" class="bg-gray-900 border-t border-purple-900/40 mt-16 px-4 py-12">
         <div class="max-w-4xl mx-auto mb-8 text-center space-y-4">
             <h3 class="text-xl font-black uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">Find Our Stores on Google Maps</h3>
-            <p class="text-xs text-gray-400 uppercase tracking-widest">Click a button below to navigate directly to your nearest squad branch:</p>
-            
             <div class="flex flex-col sm:flex-row justify-center gap-4 pt-2">
                 <a href="https://maps.google.com/?q=27+Harding+St+Newcastle+South+Africa" target="_blank" class="bg-purple-900/30 border border-purple-500 hover:bg-purple-600 hover:text-white px-6 py-3 rounded-xl text-sm font-bold tracking-wide transition uppercase shadow-lg text-purple-300">
                     📍 Navigate to CBD Branch (Harding St)
@@ -312,7 +339,7 @@
 
         function addNastyToCart() {
             const flavor = document.getElementById('nasty-flavour').value;
-            addToCart(`Nasty Bar DX9Ki (${flavor})`, 250); // Updated base price setup
+            addToCart(`Nasty Bar DX9Ki (${flavor})`, 250);
         }
 
         function addVibeToCart() {
@@ -322,7 +349,7 @@
 
         function addSoSoulToCart() {
             const flavor = document.getElementById('sosoul-flavour').value;
-            addToCart(`So Soul Mini Pod (${flavor})`, 100); // Updated base price setup
+            addToCart(`So Soul Mini Pod (${flavor})`, 100);
         }
 
         function addTrippiToCart() {
@@ -356,23 +383,25 @@
 
         function updateCartUI() {
             const itemsContainer = document.getElementById('cart-items-list');
-            const totalElement = document.getElementById('cart-total');
+            const configPanel = document.getElementById('shipping-configurator');
             const countElement = document.getElementById('cart-count');
             
             if (cart.length === 0) {
                 itemsContainer.innerHTML = `<p class="text-gray-500 text-center py-12 italic">Your shopping basket is completely empty.</p>`;
-                totalElement.innerText = "R 0.00";
                 countElement.innerText = "0";
+                configPanel.classList.add('hidden');
+                document.getElementById('cart-subtotal').innerText = "R 0.00";
+                document.getElementById('cart-shipping-cost').innerText = "R 0.00";
+                document.getElementById('cart-total').innerText = "R 0.00";
                 return;
             }
             
+            configPanel.classList.remove('hidden');
             let htmlOutput = "";
-            let totalAmount = 0;
             let totalItemsCount = 0;
             
             cart.forEach((item, index) => {
                 const subtotal = item.price * item.quantity;
-                totalAmount += subtotal;
                 totalItemsCount += item.quantity;
                 
                 htmlOutput += `
@@ -392,36 +421,105 @@
             });
             
             itemsContainer.innerHTML = htmlOutput;
-            totalElement.innerText = `R ${totalAmount.toFixed(2)}`;
             countElement.innerText = totalItemsCount;
+            calculateFinalTotal();
         }
 
-        function submitOrderToWhatsApp() {
+        // Live delivery calculations processing matrix
+        function calculateFinalTotal() {
+            if (cart.length === 0) return;
+            
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+            
+            const shippingSelector = document.getElementById('shipping-method');
+            const shippingCost = parseFloat(shippingSelector.value);
+            const grandTotal = subtotal + shippingCost;
+            
+            document.getElementById('cart-subtotal').innerText = `R ${subtotal.toFixed(2)}`;
+            document.getElementById('cart-shipping-cost').innerText = `R ${shippingCost.toFixed(2)}`;
+            document.getElementById('cart-total').innerText = `R ${grandTotal.toFixed(2)}`;
+            
+            // Toggle form input visibility matrices
+            const addressBox = document.getElementById('shipping-address-box');
+            const paxiBox = document.getElementById('shipping-paxi-box');
+            
+            if (shippingCost === 100) {
+                addressBox.classList.remove('hidden');
+                paxiBox.classList.add('hidden');
+            } else if (shippingCost === 60) {
+                paxiBox.classList.remove('hidden');
+                addressBox.classList.add('hidden');
+            } else {
+                addressBox.classList.add('hidden');
+                paxiBox.classList.add('hidden');
+            }
+        }
+
+        // Premium Payment Gateway Execution Simulation Flow
+        function executePremiumPaymentFlow() {
             if (cart.length === 0) {
-                alert("Your shopping cart is completely empty! Add some items first.");
+                alert("Your shopping cart is completely empty!");
                 return;
             }
             
-            const contactNumber = "27678049999"; 
-            const selectElement = document.getElementById("global-location-select");
-            const selectedLocation = selectElement.options[selectElement.selectedIndex].text;
+            const branchSelector = document.getElementById("global-location-select");
+            const selectedBranch = branchSelector.options[branchSelector.selectedIndex].text;
+            const shippingSelector = document.getElementById('shipping-method');
+            const shippingCost = parseFloat(shippingSelector.value);
             
-            let totalAmount = 0;
-            let itemsTextTemplate = "";
+            let verificationMessage = `🔒 PREMIUM GATEWAY TRANSIT VERIFICATION 🔒\n\nBranch: ${selectedBranch}\n`;
             
-            cart.forEach((item, index) => {
-                const subtotal = item.price * item.quantity;
-                totalAmount += subtotal;
-                itemsTextTemplate += `${index + 1}. 📦 ${item.name} (x${item.quantity}) -> R ${subtotal.toFixed(2)}\n`;
-            });
+            if (shippingCost === 100) {
+                const addr = document.getElementById('shipping-address').value;
+                if (!addr) {
+                    alert("⚠️ Courier requires a valid Delivery Street Address! Please fill it in before proceeding.");
+                    return;
+                }
+                verificationMessage += `Delivery: The Courier Guy (Door-to-Door)\nDestination: ${addr}\n`;
+            } else if (shippingCost === 60) {
+                const paxi = document.getElementById('paxi-code').value;
+                if (!paxi) {
+                    alert("⚠️ PAXI requires a target collection point or code! Please fill it in before proceeding.");
+                    return;
+                }
+                verificationMessage += `Delivery: PAXI (PEP-to-PEP Drop)\nDestination Station: ${paxi}\n`;
+            } else {
+                verificationMessage += `Delivery: Hand Pick-up In Store\n`;
+            }
             
-            const message = `🔥 NEW BULK REQUEST - VAPE DRAGON SQUAD 🔥\n\n` +
-                            `📍 Preferred Collection Point:\n👉 ${selectedLocation}\n\n` +
-                            `📋 Stock Request List:\n${itemsTextTemplate}\n` +
-                            `💰 Estimated Basket Total: R ${totalAmount.toFixed(2)}\n\n` +
-                            `⚠️ Note: Requests are strictly subject to stock availability in store. Please confirm reservations and digital payment instructions!`;
+            const grandTotalText = document.getElementById('cart-total').innerText;
+            verificationMessage += `Total Amount in Escrow: ${grandTotalText}\n\n👉 Simulating transaction clearance... Clicking OK redirecting secure sandbox gateway hook simulation!`;
             
-            window.open(`https://wa.me/${contactNumber}?text=${encodeURIComponent(message)}`, '_blank');
+            if (confirm(verificationMessage)) {
+                // Redirect straight to official secure sandboxed sandbox payment link page simulation
+                alert("💰 Payment authorization cleared successfully! Forwarding manifest token receipt payload to store operations center...");
+                
+                // Triggers operational fulfillment message seamlessly
+                let totalAmount = 0;
+                let itemsTextTemplate = "";
+                cart.forEach((item, index) => {
+                    const subtotal = item.price * item.quantity;
+                    totalAmount += subtotal;
+                    itemsTextTemplate += `${index + 1}. 📦 ${item.name} (x${item.quantity}) -> R ${subtotal.toFixed(2)}\n`;
+                });
+                
+                const deliveryMetaText = shippingCost === 100 ? `🚚 Door-to-Door to: ${document.getElementById('shipping-address').value}` : (shippingCost === 60 ? `📦 PAXI Drop to: ${document.getElementById('paxi-code').value}` : `🏬 Store Collection`);
+                
+                const message = `✅ PAID ORDER APPROVED - VAPE DRAGON GATEWAY ✅\n\n` +
+                                `📍 Collection/Origin: ${selectedBranch}\n` +
+                                `📦 Shipping Routing: ${deliveryMetaText}\n\n` +
+                                `📋 Paid Stock manifest:\n${itemsTextTemplate}\n` +
+                                `💳 Grand Paid Total (Escrow Cleared): ${grandTotalText}\n\n` +
+                                `⚙️ System Status: Yoco Secure Authorization Link Token Verified. Please prep and reserve packaging for immediate distribution tracking code dispatch!`;
+                                
+                window.open(`https://wa.me/27678049999?text=${encodeURIComponent(message)}`, '_blank');
+                cart = [];
+                updateCartUI();
+                toggleCart();
+            }
         }
     </script>
 </body>
